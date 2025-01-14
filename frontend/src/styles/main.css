@@ -641,4 +641,242 @@ body::-ms-scrollbar-track,
 body::-ms-scrollbar-thumb {
   display: none;
 }
-*/ 
+*/
+
+/* Logs Page Styles */
+.logs-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.logs-container h2 {
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.filter-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.filter-section select,
+.filter-section input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.log-item {
+  background: white;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.log-time {
+  color: #666;
+  font-size: 0.9rem;
+  min-width: 150px;
+}
+
+.log-description {
+  flex: 1;
+  margin: 0 1rem;
+}
+
+.log-points {
+  font-weight: bold;
+  min-width: 80px;
+  text-align: right;
+}
+
+.log-points.positive {
+  color: green;
+}
+
+.log-points.negative {
+  color: red;
+}
+
+/* Activities Page Styles */
+.activities-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.activities-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.activities-header h2 {
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.activity-card {
+  background: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s;
+}
+
+.activity-card:hover {
+  transform: translateY(-2px);
+}
+
+.activity-card h3 {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.activity-card p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.activity-points {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.complete-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.complete-btn:hover {
+  background: var(--primary-hover);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .activities-container {
+    padding: 1rem;
+  }
+  
+  .activities-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Activities Page Updated Styles */
+.activities-container {
+  padding: 2rem;
+}
+
+.activities-columns {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.activity-column {
+  flex: 1;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.activity-column h2 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--background-color);
+  border-radius: 5px;
+}
+
+.activity-content {
+  display: flex;
+  gap: 1rem;
+}
+
+.activity-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activity-form input {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.activity-form button {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.activity-form button:hover {
+  opacity: 0.9;
+}
+
+.delete-btn {
+  background: #ff4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .activities-columns {
+    flex-direction: column;
+    padding: 1rem;
+  }
+} 

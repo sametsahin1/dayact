@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, Link } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import { register, reset } from '../features/auth/authSlice'
-import styled from 'styled-components'
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -57,98 +56,61 @@ const Register = () => {
   }
 
   return (
-    <RegisterContainer>
-      <RegisterForm onSubmit={onSubmit}>
-        <h2>Kayıt Ol</h2>
-        <FormGroup>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={onChange}
-            placeholder="E-posta"
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={onChange}
-            placeholder="Şifre"
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <input
-            type="password"
-            name="password2"
-            value={formData.password2}
-            onChange={onChange}
-            placeholder="Şifreyi Tekrar Girin"
-            required
-          />
-        </FormGroup>
-        <Button type="submit">Kayıt Ol</Button>
-      </RegisterForm>
-    </RegisterContainer>
+    <div className="auth-container">
+      <div className="auth-card">
+        <div className="auth-header">
+          <h2>Create Account</h2>
+          <p>Please fill in your details to register</p>
+        </div>
+
+        <form onSubmit={onSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={onChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={onChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password2">Confirm Password</label>
+            <input
+              type="password"
+              id="password2"
+              name="password2"
+              value={formData.password2}
+              onChange={onChange}
+              required
+            />
+          </div>
+
+          <button type="submit" className="btn">
+            Register
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          Already have an account? <Link to="/login">Login here</Link>
+        </div>
+      </div>
+    </div>
   )
 }
-
-const RegisterContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-`
-
-const RegisterForm = styled.form`
-  background-color: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-
-  h2 {
-    text-align: center;
-    color: var(--primary-color);
-    margin-bottom: 2rem;
-  }
-`
-
-const FormGroup = styled.div`
-  margin-bottom: 1rem;
-
-  input {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-
-    &:focus {
-      outline: none;
-      border-color: var(--primary-color);
-    }
-  }
-`
-
-const Button = styled.button`
-  width: 100%;
-  padding: 0.8rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: opacity 0.3s;
-
-  &:hover {
-    opacity: 0.9;
-  }
-`
 
 export default Register 

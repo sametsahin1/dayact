@@ -49,7 +49,7 @@ const CompleteActivity = () => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
-      // Eğer tip değişirse, seçili aktiviteyi sıfırla
+      // Reset selected activity if type changes
       ...(e.target.name === 'activityType' ? { activityId: '' } : {})
     }))
   }
@@ -60,35 +60,35 @@ const CompleteActivity = () => {
 
   return (
     <div className="complete-container">
-      <h2>Etkinlik Gerçekleştir</h2>
+      <h2>Complete Activity</h2>
       <form onSubmit={handleSubmit} className="complete-form">
         <div className="form-group">
-          <label>Etkinlik Tipi:</label>
+          <label>Activity Type:</label>
           <select
             name="activityType"
             value={formData.activityType}
             onChange={handleChange}
             required
           >
-            <option value="">Seçiniz</option>
-            <option value="positive">Pozitif Etkinlik</option>
-            <option value="negative">Negatif Etkinlik</option>
+            <option value="">Select</option>
+            <option value="positive">Positive Activity</option>
+            <option value="negative">Negative Activity</option>
           </select>
         </div>
 
         {formData.activityType && (
           <div className="form-group">
-            <label>Etkinlik:</label>
+            <label>Activity:</label>
             <select
               name="activityId"
               value={formData.activityId}
               onChange={handleChange}
               required
             >
-              <option value="">Seçiniz</option>
+              <option value="">Select</option>
               {filteredActivities.map((activity) => (
                 <option key={activity._id} value={activity._id}>
-                  {activity.name} ({activity.points} puan)
+                  {activity.name} ({activity.points} points)
                 </option>
               ))}
             </select>
@@ -97,7 +97,7 @@ const CompleteActivity = () => {
 
         {formData.activityId && (
           <div className="form-group">
-            <label>Miktar:</label>
+            <label>Quantity:</label>
             <input
               type="number"
               name="quantity"
@@ -111,7 +111,7 @@ const CompleteActivity = () => {
 
         {formData.activityId && (
           <button type="submit" className="btn">
-            Tamamla
+            Complete
           </button>
         )}
       </form>
@@ -119,4 +119,4 @@ const CompleteActivity = () => {
   )
 }
 
-export default CompleteActivity 
+export default CompleteActivity
