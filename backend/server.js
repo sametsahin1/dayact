@@ -11,10 +11,12 @@ connectDB();
 
 const app = express();
 
-// Middleware
+// CORS ayarları
 app.use(cors({
-  origin: 'http://localhost:5173', // Vite'ın default portu
-  credentials: true
+    origin: ['http://localhost', 'http://localhost:80'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
