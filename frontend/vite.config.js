@@ -8,5 +8,10 @@ export default defineConfig({
   server: {
     port: 81,
     host: '0.0.0.0'
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    emptyOutDir: true
   }
 })
