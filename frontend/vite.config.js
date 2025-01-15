@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/apps/dayact/',
   server: {
-    port: 81
+    port: 81,
+    host: '0.0.0.0'
   }
 })
