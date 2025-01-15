@@ -13,7 +13,7 @@ const app = express();
 
 // CORS ayarları
 app.use(cors({
-    origin: ['http://yazilimservisi.com', 'http://localhost:8080'],
+    origin: ['http://localhost:81', 'https://yazilimservisi.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -21,13 +21,10 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Base path tanımı
-const BASE_PATH = '/api';
-
 // Routes
-app.use(`${BASE_PATH}/users`, require('./routes/userRoutes'));
-app.use(`${BASE_PATH}/activities`, require('./routes/activityRoutes'));
-app.use(`${BASE_PATH}/logs`, require('./routes/logRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/activities', require('./routes/activityRoutes'));
+app.use('/api/logs', require('./routes/logRoutes'));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`)); 

@@ -1,1 +1,1 @@
-const API_URL = '/api/users/'; 
+const API_URL = '/apps/dayact/api/users/'; 

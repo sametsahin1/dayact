@@ -1,12 +1,12 @@
+version: '3.8'
+
 services:
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
-    environment:
-      - VITE_API_URL=/apps/dayact/api
+      - "81:81"
     depends_on:
       - backend
     networks:
@@ -17,11 +17,11 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8081:5000"
+      - "5001:5001"
     environment:
       - NODE_ENV=production
+      - PORT=5001
       - MONGO_URI=mongodb://mongodb:27017/dayact
-      - BASE_PATH=/api
     depends_on:
       - mongodb
     networks:
@@ -30,7 +30,7 @@ services:
   mongodb:
     image: mongo:latest
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongodb_data:/data/db
     networks:
