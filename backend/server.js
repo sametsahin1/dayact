@@ -13,7 +13,7 @@ const app = express();
 
 // CORS ayarları
 app.use(cors({
-    origin: ['http://localhost:81', 'https://yazilimservisi.com'],
+    origin: ['http://yazilimservisi.com', 'https://yazilimservisi.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -27,4 +27,4 @@ app.use('/api/activities', require('./routes/activityRoutes'));
 app.use('/api/logs', require('./routes/logRoutes'));
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`)); 
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`)); 
