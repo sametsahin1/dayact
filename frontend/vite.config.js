@@ -7,7 +7,14 @@ export default defineConfig({
   base: '/apps/dayact/',
   server: {
     port: 81,
-    host: '0.0.0.0'
+    host: '0.0.0.0',
+    proxy: {
+      '/apps/dayact/api': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/apps\/dayact\/api/, '')
+      }
+    }
   },
   build: {
     outDir: 'dist',
