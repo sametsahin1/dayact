@@ -22,40 +22,35 @@ echo "📥 Proje indiriliyor..."
 cd "$APPS_DIR"
 sudo git clone https://github.com/sametsahin1/dayact.git
 
+# Backend servisleri başlat
+echo "🔄 Backend servisleri başlatılıyor..."
+cd "$DAYACT_DIR"
+docker-compose down
+docker-compose up -d
+
 # Frontend build
 echo "🏗️ Frontend build yapılıyor..."
 cd "$DAYACT_DIR/frontend"
 npm install
 
-# vite.config.js'i güncelle
-echo "⚙️ Vite konfigürasyonu güncelleniyor..."
-cat > vite.config.js << EOL
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-export default defineConfig({
-  plugins: [react()],
-  base: '/apps/dayact/',
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets'
-  }
-})
-EOL
-
 # Build işlemini gerçekleştir
 npm run build
 
-# Build dosyalarını kopyala
-echo "📦 Dosyalar kopyalanıyor..."
-sudo cp -r dist/* "$DAYACT_DIR/"
-
-# İzinleri ayarla
-echo "🔒 İzinler ayarlanıyor..."
-sudo chown -R www-data:www-data "$DAYACT_DIR"
-
-# Nginx'i yeniden başlat
-echo "🔄 Nginx yeniden başlatılıyor..."
-sudo systemctl restart nginx
-
-echo "✅ Deployment tamamlandı!" 
+if [ $? -eq 0 ]; then
+    # Build başarılıysa dosyaları kopyala
+    echo "📦 Dosyalar kopyalanıyor..."
+    sudo cp -r dist/* "$DAYACT_DIR/"
+    
+    # İzinleri ayarla
+    echo "🔒 İzinler ayarlanıyor..."
+    sudo chown -R www-data:www-data "$DAYACT_DIR"
+    
+    # Nginx'i yeniden başlat
+    echo "🔄 Nginx yeniden başlatılıyor..."
+    sudo systemctl restart nginx
+    
+    echo "✅ Deployment başarıyla tamamlandı!"
+else
+    echo "❌ Build başarısız oldu!"
+    exit 1
+fi 

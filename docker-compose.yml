@@ -1,15 +1,6 @@
 version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "81:81"
-    networks:
-      - app-network
-
   backend:
     build:
       context: ./backend
@@ -22,6 +13,8 @@ services:
       - MONGO_URI=mongodb://mongodb:27017/dayact
     networks:
       - app-network
+    depends_on:
+      - mongodb
 
   mongodb:
     image: mongo:latest
