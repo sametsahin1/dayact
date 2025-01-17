@@ -1,10 +1,8 @@
 import axiosInstance from '../axios'
 
-const API_URL = '/users/'
-
 // Register user
 const register = async (userData) => {
-  const response = await axiosInstance.post(API_URL + 'register', userData)
+  const response = await axiosInstance.post('/users/register', userData)
   if (response.data) {
     localStorage.setItem('user', JSON.stringify(response.data))
   }
@@ -13,7 +11,7 @@ const register = async (userData) => {
 
 // Login user
 const login = async (userData) => {
-  const response = await axiosInstance.post(API_URL + 'login', userData)
+  const response = await axiosInstance.post('/users/login', userData)
   if (response.data) {
     localStorage.setItem('user', JSON.stringify(response.data))
   }

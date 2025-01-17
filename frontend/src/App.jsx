@@ -24,16 +24,17 @@ const AppRoutes = () => {
       <div className="container">
         <Routes>
           {/* Public Routes */}
-          <Route path="login" element={!user ? <Login /> : <Navigate to="activities" />} />
-          <Route path="register" element={!user ? <Register /> : <Navigate to="activities" />} />
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/activities" />} />
+          <Route path="/register" element={!user ? <Register /> : <Navigate to="/activities" />} />
 
           {/* Protected Routes */}
-          <Route path="activities" element={user ? <Activities /> : <Navigate to="login" />} />
-          <Route path="logs" element={user ? <Logs /> : <Navigate to="login" />} />
-          <Route path="analysis" element={user ? <Analysis /> : <Navigate to="login" />} />
+          <Route path="/activities" element={user ? <Activities /> : <Navigate to="/login" />} />
+          <Route path="/logs" element={user ? <Logs /> : <Navigate to="/login" />} />
+          <Route path="/analysis" element={user ? <Analysis /> : <Navigate to="/login" />} />
 
           {/* Default Route */}
-          <Route path="*" element={<Navigate to={user ? "activities" : "login"} />} />
+          <Route path="/" element={<Navigate to={user ? "/activities" : "/login"} />} />
+          <Route path="*" element={<Navigate to={user ? "/activities" : "/login"} />} />
         </Routes>
       </div>
     </div>
@@ -43,7 +44,7 @@ const AppRoutes = () => {
 function App() {
   return (
     <Provider store={store}>
-      <Router basename="apps/dayact">
+      <Router basename="/apps/dayact">
         <AppRoutes />
       </Router>
     </Provider>
