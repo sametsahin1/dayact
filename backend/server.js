@@ -22,8 +22,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes (başında /api olmadan)
-app.use('/users', require('./routes/userRoutes'));
-app.use('/activities', require('./routes/activityRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/activities', require('./routes/activityRoutes'));
 app.use('/logs', require('./routes/logRoutes'));
 
 const PORT = process.env.PORT || 5001;
