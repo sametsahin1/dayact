@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from './features/store'
 import Header from './components/Header'
@@ -18,19 +18,17 @@ import './styles/main.css'
 function App() {
   return (
     <Provider store={store}>
-      <Router>
+      <Router basename="/apps/dayact">
         <div className="app">
           <Header />
           <div className="container">
             <Routes>
+              <Route path="/" element={<Navigate to="/login" />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route element={<PrivateRoute />}>
-                <Route path="/" element={<Activities />} />
-                <Route path="/complete" element={<CompleteActivity />} />
-                <Route path="/logs" element={<Logs />} />
-                <Route path="/analysis" element={<Analysis />} />
-              </Route>
+              <Route path="/activities" element={<Activities />} />
+              <Route path="/logs" element={<Logs />} />
+              <Route path="/analysis" element={<Analysis />} />
             </Routes>
           </div>
         </div>

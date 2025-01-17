@@ -13,7 +13,7 @@ const app = express();
 
 // CORS ayarları
 app.use(cors({
-    origin: ['http://yazilimservisi.com', 'https://yazilimservisi.com'],
+    origin: ['https://yazilimservisi.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
