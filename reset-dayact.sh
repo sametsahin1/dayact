@@ -16,7 +16,7 @@ sudo rm -rf /var/www/dayact
 # Git'ten yeni kodu çek
 echo "📥 Yeni kod indiriliyor..."
 cd /var/www
-sudo git clone https://github.com/your-username/dayact.git
+sudo git clone https://github.com/sametsahin1/dayact.git
 cd dayact
 
 # İzinleri ayarla
