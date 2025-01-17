@@ -26,6 +26,24 @@ sudo git clone https://github.com/sametsahin1/dayact.git
 echo "🏗️ Frontend build yapılıyor..."
 cd "$DAYACT_DIR/frontend"
 npm install
+
+# vite.config.js'i güncelle
+echo "⚙️ Vite konfigürasyonu güncelleniyor..."
+cat > vite.config.js << EOL
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  base: '/apps/dayact/',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets'
+  }
+})
+EOL
+
+# Build işlemini gerçekleştir
 npm run build
 
 # Build dosyalarını kopyala
