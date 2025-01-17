@@ -1,7 +1,5 @@
 const config = {
-  API_BASE_URL: import.meta.env.PROD 
-    ? 'https://yazilimservisi.com/apps/dayact/api'
-    : 'http://localhost:5001/api'
+  API_BASE_URL: '/apps/dayact/api'
 }
 
 export default config 
