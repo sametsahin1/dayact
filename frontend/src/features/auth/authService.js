@@ -1,8 +1,10 @@
-import axiosInstance from '../axios'
+import axios from '../axios'
+
+const API_URL = '/apps/dayact/api/users/'
 
 // Register user
 const register = async (userData) => {
-  const response = await axiosInstance.post('/users/register', userData)
+  const response = await axios.post('/users/register', userData)
   if (response.data) {
     localStorage.setItem('user', JSON.stringify(response.data))
   }
@@ -11,7 +13,7 @@ const register = async (userData) => {
 
 // Login user
 const login = async (userData) => {
-  const response = await axiosInstance.post('/users/login', userData)
+  const response = await axios.post('/users/login', userData)
   if (response.data) {
     localStorage.setItem('user', JSON.stringify(response.data))
   }
