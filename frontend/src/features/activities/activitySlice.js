@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import activityService from './activityService'
+import activityService from '../../services/activityService'
 import { updatePoints } from '../auth/authSlice'
 
 const initialState = {
@@ -10,13 +10,13 @@ const initialState = {
   message: '',
 }
 
-// Get activities
-export const getActivities = createAsyncThunk(
-  'activities/getAll',
-  async (_, thunkAPI) => {
+// Etkinlik oluştur
+export const createActivity = createAsyncThunk(
+  'activities/create',
+  async (activityData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
-      return await activityService.getActivities(token)
+      return await activityService.createActivity(activityData, token)
     } catch (error) {
       const message = error.response?.data?.message || error.message
       return thunkAPI.rejectWithValue(message)
@@ -24,13 +24,13 @@ export const getActivities = createAsyncThunk(
   }
 )
 
-// Create activity
-export const createActivity = createAsyncThunk(
-  'activities/create',
-  async (activityData, thunkAPI) => {
+// Etkinlikleri getir
+export const getActivities = createAsyncThunk(
+  'activities/getAll',
+  async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
-      return await activityService.createActivity(activityData, token)
+      return await activityService.getActivities(token)
     } catch (error) {
       const message = error.response?.data?.message || error.message
       return thunkAPI.rejectWithValue(message)

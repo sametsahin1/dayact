@@ -5,7 +5,7 @@ import activityReducer from './activities/activitySlice'
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    activities: activityReducer,
+    activities: activityReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
