@@ -14,6 +14,7 @@ const Header = () => {
     dispatch(logout())
     dispatch(reset())
     navigate('/login')
+    closeMenu()
   }
 
   const toggleMenu = () => {
@@ -27,7 +28,9 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-left">
-        <Link to="/" className="logo">Activity Tracker</Link>
+        <Link to={user ? "/activities" : "/login"} className="logo">
+          Activity Tracker
+        </Link>
         {user && (
           <span className="total-points">
             Total Points: {totalPoints}
@@ -53,8 +56,8 @@ const Header = () => {
           </>
         ) : (
           <>
-            <Link to="/login" className="nav-link">Login</Link>
-            <Link to="/register" className="nav-link">Register</Link>
+            <Link to="/login" className="nav-link" onClick={closeMenu}>Login</Link>
+            <Link to="/register" className="nav-link" onClick={closeMenu}>Register</Link>
           </>
         )}
       </nav>
