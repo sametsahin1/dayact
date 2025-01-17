@@ -56,8 +56,8 @@ const Header = () => {
           </>
         ) : (
           <>
-            <Link to="/login" className="nav-link" onClick={closeMenu}>Login</Link>
-            <Link to="/register" className="nav-link" onClick={closeMenu}>Register</Link>
+            <Link to="/login" className="nav-link">Login</Link>
+            <Link to="/register" className="nav-link">Register</Link>
           </>
         )}
       </nav>
