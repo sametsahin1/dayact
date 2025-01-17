@@ -50,6 +50,7 @@ const Header = () => {
         {user ? (
           <>
             <Link to="/activities" className="nav-link" onClick={closeMenu}>Activities</Link>
+            <Link to="/complete" className="nav-link" onClick={closeMenu}>Complete</Link>
             <Link to="/logs" className="nav-link" onClick={closeMenu}>History</Link>
             <Link to="/analysis" className="nav-link" onClick={closeMenu}>Analysis</Link>
             <button onClick={onLogout} className="btn-logout">Logout</button>

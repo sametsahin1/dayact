@@ -8,6 +8,7 @@ import Header from './components/Header'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Activities from './pages/Activities'
+import CompleteActivity from './pages/CompleteActivity'
 import Logs from './pages/Logs'
 import Analysis from './pages/Analysis'
 
@@ -28,6 +29,7 @@ const AppRoutes = () => {
           <Route path="/register" element={!user ? <Register /> : <Navigate to="/activities" />} />
 
           {/* Protected Routes */}
+          <Route path="/complete" element={user ? <CompleteActivity /> : <Navigate to="/login" />} />
           <Route path="/activities" element={user ? <Activities /> : <Navigate to="/login" />} />
           <Route path="/logs" element={user ? <Logs /> : <Navigate to="/login" />} />
           <Route path="/analysis" element={user ? <Analysis /> : <Navigate to="/login" />} />
