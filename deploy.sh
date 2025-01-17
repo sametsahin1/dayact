@@ -15,12 +15,6 @@ echo "📥 Proje indiriliyor..."
 cd "$APPS_DIR"
 sudo git clone https://github.com/sametsahin1/dayact.git
 
-# Backend başlat
-echo "🚀 Backend başlatılıyor..."
-cd "$DAYACT_DIR"
-docker-compose down
-docker-compose up -d --build
-
 # Frontend build
 echo "🏗️ Frontend build yapılıyor..."
 cd "$DAYACT_DIR/frontend"
@@ -29,7 +23,18 @@ npm run build
 
 # Dosyaları kopyala
 echo "📦 Dosyalar kopyalanıyor..."
-sudo cp -r dist/* "$DAYACT_DIR/"
+if [ -d "dist" ]; then
+    sudo cp -r dist/* "$DAYACT_DIR/"
+else
+    echo "❌ Build başarısız oldu!"
+    exit 1
+fi
+
+# Backend başlat
+echo "🚀 Backend başlatılıyor..."
+cd "$DAYACT_DIR"
+docker-compose down
+docker-compose up -d --build
 
 # İzinleri ayarla
 echo "🔒 İzinler ayarlanıyor..."
