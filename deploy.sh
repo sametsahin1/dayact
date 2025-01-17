@@ -22,33 +22,128 @@ echo "📥 Proje indiriliyor..."
 cd "$APPS_DIR"
 sudo git clone https://github.com/sametsahin1/dayact.git
 
-# Backend servisleri başlat
-echo "🔄 Backend servisleri başlatılıyor..."
+# Gerekli dizinleri oluştur
+echo "📁 Dizin yapısı oluşturuluyor..."
 cd "$DAYACT_DIR"
-docker-compose down
-docker-compose up -d
+mkdir -p frontend/src/features/logs
+
+# logSlice.js dosyasını oluştur
+echo "⚙️ Log modülü oluşturuluyor..."
+cat > frontend/src/features/logs/logSlice.js << 'EOL'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import logService from './logService'
+
+const initialState = {
+  logs: [],
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  message: '',
+}
+
+export const getLogs = createAsyncThunk(
+  'logs/getAll',
+  async (filters, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token
+      return await logService.getLogs(token, filters)
+    } catch (error) {
+      const message = error.response?.data?.message || error.message
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+export const resetAllData = createAsyncThunk(
+  'logs/resetAll',
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token
+      return await logService.resetAllData(token)
+    } catch (error) {
+      const message = error.response?.data?.message || error.message
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+export const logSlice = createSlice({
+  name: 'logs',
+  initialState,
+  reducers: {
+    reset: (state) => initialState,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getLogs.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getLogs.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.logs = action.payload
+      })
+      .addCase(getLogs.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(resetAllData.fulfilled, (state) => {
+        state.logs = []
+      })
+  },
+})
+
+export const { reset } = logSlice.actions
+export default logSlice.reducer
+EOL
+
+# logService.js dosyasını oluştur
+cat > frontend/src/features/logs/logService.js << 'EOL'
+import axiosInstance from '../axios'
+
+const getLogs = async (token, filters = {}) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: filters
+  }
+
+  const response = await axiosInstance.get('/logs', config)
+  return response.data
+}
+
+const resetAllData = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  }
+
+  const response = await axiosInstance.post('/logs/reset', {}, config)
+  return response.data
+}
+
+const logService = {
+  getLogs,
+  resetAllData
+}
+
+export default logService
+EOL
 
 # Frontend build
 echo "🏗️ Frontend build yapılıyor..."
-cd "$DAYACT_DIR/frontend"
+cd frontend
 npm install
-
-# Build işlemini gerçekleştir
 npm run build
 
 if [ $? -eq 0 ]; then
-    # Build başarılıysa dosyaları kopyala
     echo "📦 Dosyalar kopyalanıyor..."
     sudo cp -r dist/* "$DAYACT_DIR/"
-    
-    # İzinleri ayarla
-    echo "🔒 İzinler ayarlanıyor..."
     sudo chown -R www-data:www-data "$DAYACT_DIR"
-    
-    # Nginx'i yeniden başlat
-    echo "🔄 Nginx yeniden başlatılıyor..."
     sudo systemctl restart nginx
-    
     echo "✅ Deployment başarıyla tamamlandı!"
 else
     echo "❌ Build başarısız oldu!"
