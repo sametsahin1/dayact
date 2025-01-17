@@ -46,13 +46,10 @@ const Header = () => {
       <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
         {user ? (
           <>
-            <Link to="/" className="nav-link" onClick={closeMenu}>Activities</Link>
-            <Link to="/complete" className="nav-link" onClick={closeMenu}>Complete Activity</Link>
+            <Link to="/activities" className="nav-link" onClick={closeMenu}>Activities</Link>
             <Link to="/logs" className="nav-link" onClick={closeMenu}>History</Link>
             <Link to="/analysis" className="nav-link" onClick={closeMenu}>Analysis</Link>
-            <button onClick={() => { onLogout(); closeMenu(); }} className="nav-link btn-logout">
-              Logout
-            </button>
+            <button onClick={onLogout} className="btn-logout">Logout</button>
           </>
         ) : (
           <>

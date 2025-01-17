@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { Provider } from 'react-redux'
 import { store } from './features/store'
 import Header from './components/Header'
@@ -16,6 +17,8 @@ import PrivateRoute from './components/PrivateRoute'
 import './styles/main.css'
 
 function App() {
+  const { user } = useSelector((state) => state.auth)
+
   return (
     <Provider store={store}>
       <Router basename="/apps/dayact">
@@ -23,12 +26,17 @@ function App() {
           <Header />
           <div className="container">
             <Routes>
-              <Route path="/" element={<Navigate to="/login" />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/activities" element={<Activities />} />
-              <Route path="/logs" element={<Logs />} />
-              <Route path="/analysis" element={<Analysis />} />
+              {/* Public Routes */}
+              <Route path="/login" element={!user ? <Login /> : <Navigate to="/activities" />} />
+              <Route path="/register" element={!user ? <Register /> : <Navigate to="/activities" />} />
+
+              {/* Protected Routes */}
+              <Route path="/activities" element={user ? <Activities /> : <Navigate to="/login" />} />
+              <Route path="/logs" element={user ? <Logs /> : <Navigate to="/login" />} />
+              <Route path="/analysis" element={user ? <Analysis /> : <Navigate to="/login" />} />
+
+              {/* Default Route */}
+              <Route path="*" element={<Navigate to={user ? "/activities" : "/login"} />} />
             </Routes>
           </div>
         </div>
