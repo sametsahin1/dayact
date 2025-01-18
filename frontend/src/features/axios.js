@@ -12,25 +12,38 @@ const instance = axios.create({
 // Request interceptor
 instance.interceptors.request.use(
   (config) => {
-    console.log('Request URL:', config.baseURL + config.url)
-    return config
+    console.log('Request:', {
+      url: config.baseURL + config.url,
+      method: config.method,
+      data: config.data,
+      headers: config.headers
+    });
+    return config;
   },
   (error) => {
-    console.error('Request Error:', error)
-    return Promise.reject(error)
+    console.error('Request Error:', error);
+    return Promise.reject(error);
   }
-)
+);
 
 // Response interceptor
 instance.interceptors.response.use(
   (response) => {
-    console.log('Response:', response.data)
-    return response
+    console.log('Response:', {
+      status: response.status,
+      data: response.data,
+      headers: response.headers
+    });
+    return response;
   },
   (error) => {
-    console.error('Response Error:', error)
-    return Promise.reject(error)
+    console.error('Response Error:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    return Promise.reject(error);
   }
-)
+);
 
 export default instance 

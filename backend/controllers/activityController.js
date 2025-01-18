@@ -16,18 +16,31 @@ const getActivities = async (req, res) => {
 // Etkinlik oluştur
 const createActivity = async (req, res) => {
     try {
-        console.log('Create Activity Request:', req.body);
+        console.log('Create Activity Request Body:', req.body);
+        console.log('User ID:', req.user.id);
+        
         const { name, description, points } = req.body;
 
         if (!name || !description || !points) {
-            console.log('Missing fields:', { name, description, points });
-            return res.status(400).json({ message: 'Please add all fields' });
+            console.log('Missing fields:', { 
+                name: !!name, 
+                description: !!description, 
+                points: !!points 
+            });
+            return res.status(400).json({ 
+                message: 'Please add all fields',
+                missing: {
+                    name: !name,
+                    description: !description,
+                    points: !points
+                }
+            });
         }
 
         const activity = await Activity.create({
             name,
             description,
-            points,
+            points: Number(points),
             user: req.user.id
         });
 
@@ -35,7 +48,11 @@ const createActivity = async (req, res) => {
         res.status(201).json(activity);
     } catch (error) {
         console.error('Create Activity Error:', error);
-        res.status(500).json({ message: 'Server Error', error: error.message });
+        res.status(500).json({ 
+            message: 'Server Error', 
+            error: error.message,
+            stack: error.stack
+        });
     }
 };
 
