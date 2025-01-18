@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer from './auth/authSlice'
 import activityReducer from './activities/activitySlice'
-import logReducer from '../features/logs/logSlice'
+import logReducer from './logs/logSlice'
 
 export const store = configureStore({
   reducer: {
