@@ -5,15 +5,18 @@ const User = require('../models/userModel');
 // Register user
 const registerUser = async (req, res) => {
     try {
+        console.log('Register attempt:', req.body);
         const { email, password } = req.body;
 
         if (!email || !password) {
+            console.log('Missing fields');
             return res.status(400).json({ message: 'Please add all fields' });
         }
 
         // Check if user exists
         const userExists = await User.findOne({ email });
         if (userExists) {
+            console.log('User already exists:', email);
             return res.status(400).json({ message: 'User already exists' });
         }
 
@@ -28,6 +31,7 @@ const registerUser = async (req, res) => {
         });
 
         if (user) {
+            console.log('User created successfully:', email);
             res.status(201).json({
                 _id: user.id,
                 email: user.email,
@@ -36,7 +40,7 @@ const registerUser = async (req, res) => {
         }
     } catch (error) {
         console.error('Register Error:', error);
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
 
