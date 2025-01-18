@@ -13,14 +13,14 @@ const protect = async (req, res, next) => {
             token = req.headers.authorization.split(' ')[1]
 
             // Verify token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'abc123')
 
             // Get user from the token
             req.user = await User.findById(decoded.id).select('-password')
 
             next()
         } catch (error) {
-            console.error(error)
+            console.error('Auth Error:', error)
             res.status(401).json({ message: 'Not authorized' })
         }
     }

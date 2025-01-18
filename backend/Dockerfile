@@ -2,11 +2,14 @@ FROM node:18
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+# Bağımlılıkları kopyala ve yükle
+COPY package*.json ./
 RUN npm install
 
+# Kaynak kodları kopyala
 COPY . .
 
 EXPOSE 5001
 
-CMD ["npm", "start"] 
+# Development modunda çalıştır
+CMD ["npm", "run", "dev"] 
