@@ -1,23 +1,23 @@
 const mongoose = require('mongoose');
 
-const activitySchema = new mongoose.Schema({
+const activitySchema = mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User',
+    },
     name: {
         type: String,
-        required: [true, 'Lütfen etkinlik adı girin'],
+        required: [true, 'Please add a name'],
+    },
+    description: {
+        type: String,
+        required: [true, 'Please add a description'],
     },
     points: {
         type: Number,
-        required: [true, 'Lütfen puan değeri girin'],
-    },
-    type: {
-        type: String,
-        enum: ['positive', 'negative'],
-        required: [true, 'Lütfen etkinlik tipini belirtin'],
-    },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        required: [true, 'Please add points'],
+        min: 0,
     }
 }, {
     timestamps: true

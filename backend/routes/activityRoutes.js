@@ -3,25 +3,18 @@ const router = express.Router()
 const {
   getActivities,
   createActivity,
-  updateActivity,
   deleteActivity,
   completeActivity,
 } = require('../controllers/activityController')
-const { protect } = require('../middleware/auth')
+const { protect } = require('../middleware/authMiddleware')
 
-// Tüm rotalar için authentication gerekli
-router.use(protect)
+router.route('/')
+  .get(protect, getActivities)
+  .post(protect, createActivity)
 
-router
-  .route('/')
-  .get(getActivities)
-  .post(createActivity)
+router.route('/:id')
+  .delete(protect, deleteActivity)
 
-router
-  .route('/:id')
-  .put(updateActivity)
-  .delete(deleteActivity)
-
-router.post('/:id/complete', completeActivity)
+router.post('/:id/complete', protect, completeActivity)
 
 module.exports = router 

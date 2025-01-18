@@ -5,40 +5,37 @@ const Log = require('../models/Log');
 // Etkinlikleri getir
 const getActivities = async (req, res) => {
     try {
-        const activities = await Activity.find({ userId: req.user.id });
+        const activities = await Activity.find({ user: req.user.id });
         res.json(activities);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Get Activities Error:', error);
+        res.status(500).json({ message: 'Server Error' });
     }
 };
 
 // Etkinlik oluştur
 const createActivity = async (req, res) => {
     try {
-        const { name, points, type } = req.body;
+        console.log('Create Activity Request:', req.body);
+        const { name, description, points } = req.body;
 
-        if (!name || !points || !type) {
-            return res.status(400).json({ message: 'Lütfen tüm alanları doldurun' });
+        if (!name || !description || !points) {
+            console.log('Missing fields:', { name, description, points });
+            return res.status(400).json({ message: 'Please add all fields' });
         }
 
         const activity = await Activity.create({
             name,
+            description,
             points,
-            type,
-            userId: req.user.id,
+            user: req.user.id
         });
 
-        // Log oluştur
-        await Log.create({
-            userId: req.user.id,
-            activityId: activity._id,
-            action: 'create',
-            description: `${name} etkinliği oluşturuldu`,
-        });
-
+        console.log('Activity created:', activity);
         res.status(201).json(activity);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error('Create Activity Error:', error);
+        res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
 
@@ -82,14 +79,15 @@ const deleteActivity = async (req, res) => {
         const activity = await Activity.findById(req.params.id);
 
         if (!activity) {
-            return res.status(404).json({ message: 'Etkinlik bulunamadı' });
+            return res.status(404).json({ message: 'Activity not found' });
         }
 
-        if (activity.userId.toString() !== req.user.id) {
-            return res.status(401).json({ message: 'Yetkiniz yok' });
+        // Check for user
+        if (activity.user.toString() !== req.user.id) {
+            return res.status(401).json({ message: 'User not authorized' });
         }
 
-        await activity.deleteOne();
+        await activity.remove();
 
         // Log oluştur
         await Log.create({
@@ -101,49 +99,38 @@ const deleteActivity = async (req, res) => {
 
         res.json({ id: req.params.id });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error('Delete Activity Error:', error);
+        res.status(500).json({ message: 'Server Error' });
     }
 };
 
 // Etkinlik gerçekleştir
 const completeActivity = async (req, res) => {
     try {
-        const activity = await Activity.findById(req.params.id)
+        const activity = await Activity.findById(req.params.id);
+
         if (!activity) {
-            return res.status(404).json({ message: 'Activity not found' })
+            return res.status(404).json({ message: 'Activity not found' });
         }
 
-        const { quantity = 1 } = req.body
-        
-        // Puan hesaplama
-        const pointChange = activity.type === 'positive' 
-            ? activity.points * quantity 
-            : -(activity.points * quantity)
+        // Check for user
+        if (activity.user.toString() !== req.user.id) {
+            return res.status(401).json({ message: 'User not authorized' });
+        }
 
-        // Kullanıcı puanını güncelle
-        const user = await User.findById(req.user.id)
-        user.totalPoints = (user.totalPoints || 0) + pointChange
-        await user.save()
+        const { quantity } = req.body;
+        const earnedPoints = activity.points * quantity;
 
-        // Log oluştur
-        await Log.create({
-            userId: req.user.id,
-            activityId: activity._id,
-            action: 'complete',
-            points: pointChange,
-            quantity,
-            description: `${activity.name} completed ${quantity} times (${pointChange} points)`
-        })
-
-        res.json({
-            message: 'Activity completed successfully',
-            newTotalPoints: user.totalPoints,
-            pointChange
-        })
+        res.json({ 
+            activityId: req.params.id,
+            earnedPoints,
+            quantity
+        });
     } catch (error) {
-        res.status(400).json({ message: error.message })
+        console.error('Complete Activity Error:', error);
+        res.status(500).json({ message: 'Server Error' });
     }
-}
+};
 
 module.exports = {
     getActivities,
