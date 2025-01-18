@@ -34,8 +34,8 @@ function ActivityForm() {
     }
 
     const activityData = {
-      name,
-      description,
+      name: name.trim(),
+      description: description.trim(),
       points: Number(points),
       type
     }

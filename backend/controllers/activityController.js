@@ -18,7 +18,7 @@ const createActivity = async (req, res) => {
     try {
         console.log('=== Create Activity Request ===');
         console.log('Headers:', req.headers);
-        console.log('Body:', req.body);
+        console.log('Body:', JSON.stringify(req.body, null, 2));
         console.log('User:', req.user);
         
         const { name, description, points, type } = req.body;
@@ -43,7 +43,13 @@ const createActivity = async (req, res) => {
             
             return res.status(400).json({ 
                 message: 'Please add all fields',
-                missing: missingFields
+                missing: missingFields,
+                received: {
+                    name,
+                    description,
+                    points,
+                    type
+                }
             });
         }
 

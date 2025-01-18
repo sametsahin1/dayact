@@ -15,7 +15,12 @@ const getActivities = async (token) => {
 // Create activity
 const createActivity = async (activityData, token) => {
   try {
-    console.log('Activity Service - Creating Activity:', activityData);
+    console.log('Activity Service - Creating Activity:', {
+      name: activityData.name,
+      description: activityData.description,
+      points: activityData.points,
+      type: activityData.type
+    });
     
     const config = {
       headers: {
@@ -31,7 +36,8 @@ const createActivity = async (activityData, token) => {
     console.error('Activity Service - Error:', {
       message: error.message,
       response: error.response?.data,
-      status: error.response?.status
+      status: error.response?.status,
+      data: error.response?.config?.data
     });
     throw error;
   }
