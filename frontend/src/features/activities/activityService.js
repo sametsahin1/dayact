@@ -17,20 +17,18 @@ const createActivity = async (activityData, token) => {
   try {
     console.log('Activity Service - Creating Activity:', activityData);
     
-    // Token kontrolü ekleyelim
     if (!token) {
       throw new Error('No token provided');
     }
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
     };
 
-    // URL'yi tam olarak belirtelim
-    const response = await axiosInstance.post('/apps/dayact/api/activities', activityData, config);
+    // Sadece /activities kullanıyoruz, baseURL axios instance'da tanımlı
+    const response = await axiosInstance.post('/activities', activityData, config);
     
     console.log('Activity Service - Response:', response.data);
     return response.data;
