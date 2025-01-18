@@ -51,6 +51,20 @@ export const deleteActivity = createAsyncThunk(
   }
 )
 
+// Complete activity
+export const completeActivity = createAsyncThunk(
+  'activities/complete',
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token
+      return await activityService.completeActivity(data.id, data.quantity, token)
+    } catch (error) {
+      const message = error.response?.data?.message || error.message
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
 export const activitySlice = createSlice({
   name: 'activity',
   initialState,
@@ -72,7 +86,47 @@ export const activitySlice = createSlice({
         state.isError = true
         state.message = action.payload
       })
-      // ... diğer case'ler
+      .addCase(createActivity.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(createActivity.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.activities.push(action.payload)
+      })
+      .addCase(createActivity.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(deleteActivity.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(deleteActivity.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.activities = state.activities.filter(
+          (activity) => activity._id !== action.payload.id
+        )
+      })
+      .addCase(deleteActivity.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(completeActivity.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(completeActivity.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        // Aktivite tamamlandığında gerekli state güncellemeleri
+      })
+      .addCase(completeActivity.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
   },
 })
 

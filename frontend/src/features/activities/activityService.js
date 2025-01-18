@@ -36,10 +36,23 @@ const deleteActivity = async (activityId, token) => {
   return response.data
 }
 
+// Complete activity
+const completeActivity = async (activityId, quantity, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axiosInstance.post(`/activities/${activityId}/complete`, { quantity }, config)
+  return response.data
+}
+
 const activityService = {
   getActivities,
   createActivity,
   deleteActivity,
+  completeActivity,
 }
 
 export default activityService 
