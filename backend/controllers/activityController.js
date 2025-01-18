@@ -16,26 +16,34 @@ const getActivities = async (req, res) => {
 // Etkinlik oluştur
 const createActivity = async (req, res) => {
     try {
-        console.log('Create Activity Request Body:', req.body);
-        console.log('User ID:', req.user.id);
+        console.log('=== Create Activity Request ===');
+        console.log('Headers:', req.headers);
+        console.log('Body:', req.body);
+        console.log('User:', req.user);
         
         const { name, description, points, type } = req.body;
 
+        // Log received fields
+        console.log('Received Fields:', {
+            name: name || 'missing',
+            description: description || 'missing',
+            points: points || 'missing',
+            type: type || 'missing'
+        });
+
         if (!name || !description || !points || !type) {
-            console.log('Missing fields:', { 
-                name: !!name, 
-                description: !!description, 
-                points: !!points,
-                type: !!type
-            });
+            const missingFields = {
+                name: !name,
+                description: !description,
+                points: !points,
+                type: !type
+            };
+            
+            console.log('Missing Fields:', missingFields);
+            
             return res.status(400).json({ 
                 message: 'Please add all fields',
-                missing: {
-                    name: !name,
-                    description: !description,
-                    points: !points,
-                    type: !type
-                }
+                missing: missingFields
             });
         }
 
@@ -47,14 +55,16 @@ const createActivity = async (req, res) => {
             user: req.user.id
         });
 
-        console.log('Activity created:', activity);
+        console.log('Activity Created Successfully:', activity);
         res.status(201).json(activity);
     } catch (error) {
-        console.error('Create Activity Error:', error);
+        console.error('Create Activity Error:', {
+            message: error.message,
+            stack: error.stack
+        });
         res.status(500).json({ 
             message: 'Server Error', 
-            error: error.message,
-            stack: error.stack
+            error: error.message
         });
     }
 };

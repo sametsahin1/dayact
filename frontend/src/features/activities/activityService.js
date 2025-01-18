@@ -14,24 +14,28 @@ const getActivities = async (token) => {
 
 // Create activity
 const createActivity = async (activityData, token) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  }
-
-  console.log('Sending activity data:', activityData)
-
   try {
-    const response = await axiosInstance.post('/activities', activityData, config)
-    console.log('Create activity response:', response.data)
-    return response.data
+    console.log('Activity Service - Creating Activity:', activityData);
+    
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axiosInstance.post('/activities', activityData, config);
+    console.log('Activity Service - Response:', response.data);
+    return response.data;
   } catch (error) {
-    console.error('Create activity error:', error.response?.data || error.message)
-    throw error
+    console.error('Activity Service - Error:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    throw error;
   }
-}
+};
 
 // Delete activity
 const deleteActivity = async (activityId, token) => {

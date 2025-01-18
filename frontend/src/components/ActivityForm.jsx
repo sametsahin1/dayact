@@ -24,16 +24,14 @@ function ActivityForm() {
     e.preventDefault()
 
     if (!name || !description || !points || !type) {
-      console.log('Missing fields:', { name, description, points, type })
+      console.log('Form Validation Failed:', { 
+        name: name || 'missing',
+        description: description || 'missing',
+        points: points || 'missing',
+        type: type || 'missing'
+      })
       return
     }
-
-    console.log('Submitting Form Data:', {
-      name,
-      description,
-      points: Number(points),
-      type
-    })
 
     const activityData = {
       name,
@@ -42,8 +40,12 @@ function ActivityForm() {
       type
     }
 
+    console.log('Sending Activity Data:', activityData)
+
     try {
-      await dispatch(createActivity(activityData)).unwrap()
+      const result = await dispatch(createActivity(activityData)).unwrap()
+      console.log('Activity Created:', result)
+      
       setFormData({
         name: '',
         description: '',
