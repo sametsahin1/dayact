@@ -6,10 +6,11 @@ function ActivityForm() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    points: ''
+    points: '',
+    type: 'positive'
   })
 
-  const { name, description, points } = formData
+  const { name, description, points, type } = formData
   const dispatch = useDispatch()
 
   const onChange = (e) => {
@@ -22,32 +23,32 @@ function ActivityForm() {
   const onSubmit = async (e) => {
     e.preventDefault()
 
-    // Form validation
-    if (!name || !description || !points) {
-      console.log('Missing fields:', { name, description, points })
+    if (!name || !description || !points || !type) {
+      console.log('Missing fields:', { name, description, points, type })
       return
     }
 
-    // Log the form data before dispatch
     console.log('Submitting Form Data:', {
       name,
       description,
-      points: Number(points)
+      points: Number(points),
+      type
     })
 
     const activityData = {
       name,
       description,
-      points: Number(points)
+      points: Number(points),
+      type
     }
 
     try {
       await dispatch(createActivity(activityData)).unwrap()
-      // Clear form on success
       setFormData({
         name: '',
         description: '',
-        points: ''
+        points: '',
+        type: 'positive'
       })
     } catch (error) {
       console.error('Failed to create activity:', error)
@@ -92,6 +93,19 @@ function ActivityForm() {
             min="0"
             required
           />
+        </div>
+        <div className='form-group'>
+          <label htmlFor='type'>Activity Type</label>
+          <select
+            name='type'
+            id='type'
+            value={type}
+            onChange={onChange}
+            required
+          >
+            <option value='positive'>Positive</option>
+            <option value='negative'>Negative</option>
+          </select>
         </div>
         <div className='form-group'>
           <button className='btn btn-block' type='submit'>

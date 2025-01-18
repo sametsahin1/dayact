@@ -18,6 +18,12 @@ const activitySchema = mongoose.Schema({
         type: Number,
         required: [true, 'Please add points'],
         min: 0,
+    },
+    type: {
+        type: String,
+        enum: ['positive', 'negative'],
+        required: [true, 'Please specify activity type'],
+        default: 'positive'
     }
 }, {
     timestamps: true

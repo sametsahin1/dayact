@@ -19,20 +19,22 @@ const createActivity = async (req, res) => {
         console.log('Create Activity Request Body:', req.body);
         console.log('User ID:', req.user.id);
         
-        const { name, description, points } = req.body;
+        const { name, description, points, type } = req.body;
 
-        if (!name || !description || !points) {
+        if (!name || !description || !points || !type) {
             console.log('Missing fields:', { 
                 name: !!name, 
                 description: !!description, 
-                points: !!points 
+                points: !!points,
+                type: !!type
             });
             return res.status(400).json({ 
                 message: 'Please add all fields',
                 missing: {
                     name: !name,
                     description: !description,
-                    points: !points
+                    points: !points,
+                    type: !type
                 }
             });
         }
@@ -41,6 +43,7 @@ const createActivity = async (req, res) => {
             name,
             description,
             points: Number(points),
+            type,
             user: req.user.id
         });
 
