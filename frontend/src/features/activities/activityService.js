@@ -16,12 +16,21 @@ const getActivities = async (token) => {
 const createActivity = async (activityData, token) => {
   const config = {
     headers: {
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
   }
 
-  const response = await axiosInstance.post('/activities', activityData, config)
-  return response.data
+  console.log('Sending activity data:', activityData)
+
+  try {
+    const response = await axiosInstance.post('/activities', activityData, config)
+    console.log('Create activity response:', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Create activity error:', error.response?.data || error.message)
+    throw error
+  }
 }
 
 // Delete activity

@@ -19,11 +19,21 @@ function ActivityForm() {
     }))
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
 
+    // Form validation
+    if (!name || !description || !points) {
+      console.log('Missing fields:', { name, description, points })
+      return
+    }
+
     // Log the form data before dispatch
-    console.log('Form Data:', formData)
+    console.log('Submitting Form Data:', {
+      name,
+      description,
+      points: Number(points)
+    })
 
     const activityData = {
       name,
@@ -31,12 +41,17 @@ function ActivityForm() {
       points: Number(points)
     }
 
-    dispatch(createActivity(activityData))
-    setFormData({
-      name: '',
-      description: '',
-      points: ''
-    })
+    try {
+      await dispatch(createActivity(activityData)).unwrap()
+      // Clear form on success
+      setFormData({
+        name: '',
+        description: '',
+        points: ''
+      })
+    } catch (error) {
+      console.error('Failed to create activity:', error)
+    }
   }
 
   return (
@@ -50,6 +65,8 @@ function ActivityForm() {
             id='name'
             value={name}
             onChange={onChange}
+            placeholder='Enter activity name'
+            required
           />
         </div>
         <div className='form-group'>
@@ -59,6 +76,8 @@ function ActivityForm() {
             id='description'
             value={description}
             onChange={onChange}
+            placeholder='Enter activity description'
+            required
           />
         </div>
         <div className='form-group'>
@@ -69,6 +88,9 @@ function ActivityForm() {
             id='points'
             value={points}
             onChange={onChange}
+            placeholder='Enter points value'
+            min="0"
+            required
           />
         </div>
         <div className='form-group'>
