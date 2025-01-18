@@ -15,13 +15,13 @@ const getActivities = async (token) => {
 // Create activity
 const createActivity = async (activityData, token) => {
   try {
-    console.log('Activity Service - Creating Activity:', {
-      name: activityData.name,
-      description: activityData.description,
-      points: activityData.points,
-      type: activityData.type
-    });
+    console.log('Activity Service - Creating Activity:', activityData);
     
+    // Token kontrolü ekleyelim
+    if (!token) {
+      throw new Error('No token provided');
+    }
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -29,7 +29,9 @@ const createActivity = async (activityData, token) => {
       },
     };
 
-    const response = await axiosInstance.post('/activities', activityData, config);
+    // URL'yi tam olarak belirtelim
+    const response = await axiosInstance.post('/apps/dayact/api/activities', activityData, config);
+    
     console.log('Activity Service - Response:', response.data);
     return response.data;
   } catch (error) {

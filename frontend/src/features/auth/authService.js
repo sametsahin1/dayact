@@ -11,7 +11,7 @@ const register = async (userData) => {
 
 // Login user
 const login = async (userData) => {
-  const response = await axiosInstance.post('/users/login', userData)
+  const response = await axiosInstance.post('/apps/dayact/api/users/login', userData)
   if (response.data) {
     localStorage.setItem('user', JSON.stringify(response.data))
   }
