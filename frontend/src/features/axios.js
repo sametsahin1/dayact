@@ -9,11 +9,26 @@ const instance = axios.create({
   }
 })
 
+// Request interceptor
+instance.interceptors.request.use(
+  (config) => {
+    console.log('Request URL:', config.baseURL + config.url)
+    return config
+  },
+  (error) => {
+    console.error('Request Error:', error)
+    return Promise.reject(error)
+  }
+)
+
 // Response interceptor
 instance.interceptors.response.use(
-  response => response,
-  error => {
-    console.error('API Error:', error)
+  (response) => {
+    console.log('Response:', response.data)
+    return response
+  },
+  (error) => {
+    console.error('Response Error:', error)
     return Promise.reject(error)
   }
 )
