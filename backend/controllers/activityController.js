@@ -17,18 +17,18 @@ const getActivities = async (req, res) => {
 const createActivity = async (req, res) => {
     try {
         console.log('=== Create Activity Request ===');
-        console.log('Headers:', req.headers);
+        console.log('Headers:', JSON.stringify(req.headers, null, 2));
         console.log('Body:', JSON.stringify(req.body, null, 2));
-        console.log('User:', req.user);
+        console.log('User:', JSON.stringify(req.user, null, 2));
         
         const { name, description, points, type } = req.body;
 
-        // Log received fields
+        // Log received fields with types
         console.log('Received Fields:', {
-            name: name || 'missing',
-            description: description || 'missing',
-            points: points || 'missing',
-            type: type || 'missing'
+            name: { value: name, type: typeof name },
+            description: { value: description, type: typeof description },
+            points: { value: points, type: typeof points },
+            type: { value: type, type: typeof type }
         });
 
         if (!name || !description || !points || !type) {

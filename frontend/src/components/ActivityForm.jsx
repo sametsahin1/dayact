@@ -14,6 +14,15 @@ function ActivityForm() {
   const dispatch = useDispatch()
 
   const onChange = (e) => {
+    console.log('Form Change:', {
+      field: e.target.name,
+      value: e.target.value,
+      formData: {
+        ...formData,
+        [e.target.name]: e.target.value,
+      }
+    })
+
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -40,7 +49,7 @@ function ActivityForm() {
       type
     }
 
-    console.log('Sending Activity Data:', activityData)
+    console.log('Submitting Activity Data:', activityData)
 
     try {
       const result = await dispatch(createActivity(activityData)).unwrap()
