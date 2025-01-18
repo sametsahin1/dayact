@@ -13,10 +13,12 @@ const app = express();
 
 // CORS ayarları
 app.use(cors({
-    origin: 'https://yazilimservisi.com',
+    origin: ['https://yazilimservisi.com', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
