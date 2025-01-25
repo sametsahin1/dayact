@@ -98,7 +98,6 @@ export const { reset } = logSlice.actions
 export default logSlice.reducer
 EOL
 
-# logService.js dosyasını oluştur
 cat > frontend/src/features/logs/logService.js << 'EOL'
 import axiosInstance from '../axios'
 
