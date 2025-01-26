@@ -21,14 +21,19 @@ const createActivity = async (activityData, token) => {
       throw new Error('No token provided');
     }
 
+    // Description ekle
+    const dataWithDescription = {
+      ...activityData,
+      description: activityData.description || activityData.name // Description yoksa name'i kullan
+    };
+
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
 
-    // Sadece /activities kullanıyoruz, baseURL axios instance'da tanımlı
-    const response = await axiosInstance.post('/activities', activityData, config);
+    const response = await axiosInstance.post('/activities', dataWithDescription, config);
     
     console.log('Activity Service - Response:', response.data);
     return response.data;

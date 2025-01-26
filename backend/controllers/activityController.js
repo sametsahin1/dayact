@@ -16,61 +16,67 @@ const getActivities = async (req, res) => {
 // Etkinlik oluştur
 const createActivity = async (req, res) => {
     try {
-        console.log('=== Create Activity Request ===');
-        console.log('Headers:', JSON.stringify(req.headers, null, 2));
-        console.log('Body:', JSON.stringify(req.body, null, 2));
-        console.log('User:', JSON.stringify(req.user, null, 2));
-        
-        const { name, description, points, type } = req.body;
-
-        // Log received fields with types
-        console.log('Received Fields:', {
-            name: { value: name, type: typeof name },
-            description: { value: description, type: typeof description },
-            points: { value: points, type: typeof points },
-            type: { value: type, type: typeof type }
+        console.log('Create Activity Request:', {
+            body: req.body,
+            user: req.user?.id
         });
 
-        if (!name || !description || !points || !type) {
-            const missingFields = {
-                name: !name,
-                description: !description,
-                points: !points,
-                type: !type
-            };
-            
-            console.log('Missing Fields:', missingFields);
-            
+        const { name, description, points, type } = req.body;
+
+        // Validation
+        if (!name || !points || !type) {
+            console.log('Validation Error:', {
+                missing: {
+                    name: !name,
+                    points: !points,
+                    type: !type
+                },
+                received: req.body
+            });
             return res.status(400).json({ 
                 message: 'Please add all fields',
-                missing: missingFields,
-                received: {
-                    name,
-                    description,
-                    points,
-                    type
-                }
+                missing: {
+                    name: !name,
+                    points: !points,
+                    type: !type
+                },
+                received: req.body
             });
         }
 
+        // Önce activity oluştur
         const activity = await Activity.create({
             name,
-            description,
+            description: description || name,
             points: Number(points),
             type,
             user: req.user.id
         });
 
-        console.log('Activity Created Successfully:', activity);
+        console.log('Activity Created:', activity);
+
+        // Sonra log oluştur
+        const log = await Log.create({
+            user: req.user.id,
+            points: 0,
+            type: activity.type,
+            action: 'create',
+            description: activity.name
+        });
+
+        console.log('Log Created:', log);
+
         res.status(201).json(activity);
     } catch (error) {
         console.error('Create Activity Error:', {
-            message: error.message,
-            stack: error.stack
+            error: error.message,
+            stack: error.stack,
+            body: req.body,
+            user: req.user?.id
         });
         res.status(500).json({ 
-            message: 'Server Error', 
-            error: error.message
+            message: 'Server Error',
+            details: error.message
         });
     }
 };
@@ -112,31 +118,53 @@ const updateActivity = async (req, res) => {
 // Etkinlik sil
 const deleteActivity = async (req, res) => {
     try {
+        console.log('Delete Activity Request:', {
+            id: req.params.id,
+            user: req.user?.id
+        });
+
         const activity = await Activity.findById(req.params.id);
 
         if (!activity) {
+            console.log('Activity not found:', req.params.id);
             return res.status(404).json({ message: 'Activity not found' });
         }
 
-        // Check for user
         if (activity.user.toString() !== req.user.id) {
+            console.log('Unauthorized delete attempt:', {
+                activityUser: activity.user,
+                requestUser: req.user.id
+            });
             return res.status(401).json({ message: 'User not authorized' });
         }
 
-        await activity.remove();
-
-        // Log oluştur
-        await Log.create({
-            userId: req.user.id,
-            activityId: activity._id,
+        // Önce log oluştur
+        const log = await Log.create({
+            user: req.user.id,
+            points: 0,
+            type: activity.type,
             action: 'delete',
-            description: `${activity.name} etkinliği silindi`,
+            description: activity.name
         });
+
+        console.log('Delete Log Created:', log);
+
+        // Sonra activity'yi sil
+        await Activity.findByIdAndDelete(req.params.id);
+        console.log('Activity Deleted:', req.params.id);
 
         res.json({ id: req.params.id });
     } catch (error) {
-        console.error('Delete Activity Error:', error);
-        res.status(500).json({ message: 'Server Error' });
+        console.error('Delete Activity Error:', {
+            error: error.message,
+            stack: error.stack,
+            id: req.params.id,
+            user: req.user?.id
+        });
+        res.status(500).json({ 
+            message: 'Server Error',
+            details: error.message
+        });
     }
 };
 
@@ -144,7 +172,6 @@ const deleteActivity = async (req, res) => {
 const completeActivity = async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id);
-
         if (!activity) {
             return res.status(404).json({ message: 'Activity not found' });
         }
@@ -154,12 +181,29 @@ const completeActivity = async (req, res) => {
             return res.status(401).json({ message: 'User not authorized' });
         }
 
-        const { quantity } = req.body;
-        const earnedPoints = activity.points * quantity;
+        const { quantity = 1 } = req.body;
+        const pointsToAdd = activity.type === 'positive' ? 
+            activity.points * quantity : 
+            -activity.points * quantity;
+
+        // Update user points
+        const user = await User.findById(req.user.id);
+        user.totalPoints += pointsToAdd;
+        await user.save();
+
+        // Create log
+        await Log.create({
+            user: req.user.id,
+            activity: activity._id,
+            points: pointsToAdd,
+            quantity,
+            type: activity.type
+        });
 
         res.json({ 
-            activityId: req.params.id,
-            earnedPoints,
+            activityId: activity._id,
+            pointsEarned: pointsToAdd,
+            newTotalPoints: user.totalPoints,
             quantity
         });
     } catch (error) {

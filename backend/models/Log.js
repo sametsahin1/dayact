@@ -1,26 +1,34 @@
 const mongoose = require('mongoose');
 
-const logSchema = new mongoose.Schema({
-    userId: {
+const logSchema = mongoose.Schema({
+    user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        required: true,
+        ref: 'User'
     },
-    activityId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Activity'
+    points: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    type: {
+        type: String,
+        enum: ['positive', 'negative'],
+        required: true
     },
     action: {
         type: String,
-        required: true,
-        enum: ['create', 'update', 'delete', 'complete']
+        enum: ['create', 'delete', 'complete', 'update'],
+        required: true
     },
-    points: Number,
-    quantity: Number,
     description: {
         type: String,
-        required: true,
+        required: true
     },
+    quantity: {
+        type: Number,
+        default: 1
+    }
 }, {
     timestamps: true
 });

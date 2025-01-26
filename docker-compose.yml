@@ -1,38 +1,43 @@
 version: '3.8'
 
 services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:5001
+    depends_on:
+      - backend
+
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     ports:
       - "5001:5001"
-    environment:
-      - NODE_ENV=development
-      - PORT=5001
-      - MONGO_URI=mongodb://mongodb:27017/dayact
     volumes:
       - ./backend:/app
       - /app/node_modules
-    networks:
-      - app-network
+    environment:
+      - PORT=5001
+      - MONGO_URI=mongodb://mongodb:27017/dayact
+      - JWT_SECRET=abc123
+      - NODE_ENV=development
     depends_on:
       - mongodb
-    restart: always
 
   mongodb:
     image: mongo:latest
     ports:
-      - "27018:27017"
+      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-    networks:
-      - app-network
-    restart: always
 
 networks:
-  app-network:
-    driver: bridge
+  default:
+    name: app-network
 
 volumes:
   mongodb_data:

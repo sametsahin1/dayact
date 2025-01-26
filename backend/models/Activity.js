@@ -12,7 +12,8 @@ const activitySchema = mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, 'Please add a description'],
+        required: false,
+        default: ''
     },
     points: {
         type: Number,

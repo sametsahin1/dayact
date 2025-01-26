@@ -1,35 +1,33 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/apps/dayact/',
   server: {
-    port: 81,
-    host: '0.0.0.0',
-    proxy: {
-      '/apps/dayact/api': {
-        target: 'http://localhost:5001',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/apps\/dayact\/api/, '')
-      }
+    port: 5173,
+    host: true,
+    watch: {
+      usePolling: true
     }
   },
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        manualChunks: undefined
-      }
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      'public': path.resolve(__dirname, './public')
     }
   },
+  publicDir: 'public',
   define: {
     'process.env.ROUTER_FUTURE': JSON.stringify({
       v7_startTransition: true,
       v7_relativeSplatPath: true
     })
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    emptyOutDir: true,
   }
 })

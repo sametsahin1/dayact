@@ -1,21 +1,17 @@
-# Build aşaması
-FROM node:18 AS build
+# Development için Dockerfile
+FROM node:18
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+# Bağımlılıkları kopyala ve yükle
+COPY package*.json ./
 RUN npm install
 
+# Kaynak kodları kopyala
 COPY . .
 
-RUN npm run build
+# Vite dev server portu
+EXPOSE 5173
 
-# Production aşaması
-FROM nginx:alpine
-
-# Build çıktısını doğrudan sunucu dizinine kopyala
-COPY --from=build /app/dist /var/www/yazilimservisi.com/apps/dayact
-
-EXPOSE 81
-
-CMD ["nginx", "-g", "daemon off;"] 
+# Development modunda çalıştır
+CMD ["npm", "run", "dev"] 

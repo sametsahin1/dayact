@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const instance = axios.create({
-  baseURL: '/apps/dayact/api',
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:5001',
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json'
@@ -9,7 +9,7 @@ const instance = axios.create({
 })
 
 // Request interceptor
-instance.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
     console.log('Request:', {
       fullUrl: config.baseURL + config.url,
@@ -26,23 +26,24 @@ instance.interceptors.request.use(
 );
 
 // Response interceptor
-instance.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => {
-    console.log('Response:', {
-      status: response.status,
-      data: response.data,
-      headers: response.headers
-    });
+    console.log('Response:', response);
     return response;
   },
   (error) => {
-    console.error('Response Error:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status
-    });
-    return Promise.reject(error);
+    console.error('Response Error:', error);
+    if (error.response) {
+      // Server tarafından hata döndü
+      return Promise.reject(error.response.data);
+    } else if (error.request) {
+      // İstek yapıldı ama cevap alınamadı
+      return Promise.reject({ message: 'No response from server' });
+    } else {
+      // İstek yapılırken hata oluştu
+      return Promise.reject({ message: error.message });
+    }
   }
 );
 
-export default instance 
+export default axiosInstance 

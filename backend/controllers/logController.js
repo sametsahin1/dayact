@@ -5,55 +5,54 @@ const User = require('../models/User')
 // Logları getir
 const getLogs = async (req, res) => {
     try {
-        const { period, startDate } = req.query
-        let query = { userId: req.user.id }
-        
-        // Tarih filtreleme
-        if (startDate) {
-            const start = new Date(startDate)
-            const end = new Date(startDate)
-            
-            switch (period) {
-                case 'day':
-                    end.setDate(end.getDate() + 1)
-                    break
-                case 'week':
-                    end.setDate(end.getDate() + 7)
-                    break
-                case 'month':
-                    end.setMonth(end.getMonth() + 1)
-                    break
-                case 'year':
-                    end.setFullYear(end.getFullYear() + 1)
-                    break
-            }
-            
-            query.createdAt = {
-                $gte: start,
-                $lt: end
-            }
-        }
-
-        const logs = await Log.find(query)
+        const logs = await Log.find({ user: req.user.id })
             .sort({ createdAt: -1 })
-            .populate('activityId', 'name type points')
+            .limit(50);
 
-        res.json(logs)
+        const formattedLogs = logs.map(log => {
+            let description = '';
+
+            switch(log.action) {
+                case 'create':
+                    description = `Created new activity: ${log.description}`;
+                    break;
+                case 'delete':
+                    description = `Deleted activity: ${log.description}`;
+                    break;
+                case 'complete':
+                    description = `Completed ${log.description}${log.quantity > 1 ? ` (${log.quantity}x)` : ''}`;
+                    break;
+                default:
+                    description = `Updated ${log.description}`;
+            }
+
+            return {
+                _id: log._id,
+                description,
+                points: log.points,
+                type: log.type,
+                createdAt: log.createdAt,
+                action: log.action,
+                quantity: log.quantity
+            };
+        });
+
+        res.json(formattedLogs);
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        console.error('Get Logs Error:', error);
+        res.status(500).json({ 
+            message: 'Server Error', 
+            error: error.message 
+        });
     }
 }
 
 // Reset all data
 const resetAllData = async (req, res) => {
     try {
-        // Kullanıcının tüm loglarını sil
-        await Log.deleteMany({ userId: req.user.id })
+        await Log.deleteMany({ user: req.user.id })
+        await Activity.deleteMany({ user: req.user.id })
         
-        // Kullanıcının tüm aktivitelerini sil
-        await Activity.deleteMany({ userId: req.user.id })
-        
-        // Kullanıcının puanını sıfırla
         const user = await User.findById(req.user.id)
         user.totalPoints = 0
         await user.save()
@@ -63,7 +62,8 @@ const resetAllData = async (req, res) => {
             newTotalPoints: 0
         })
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        console.error('Reset All Data Error:', error);
+        res.status(500).json({ message: 'Server Error' })
     }
 }
 

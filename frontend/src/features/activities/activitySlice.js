@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import activityService from './activityService'
+import { getLogs } from '../logs/logSlice'
 
 const initialState = {
   activities: [],
@@ -29,10 +30,11 @@ export const createActivity = createAsyncThunk(
   async (activityData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
-      return await activityService.createActivity(activityData, token)
+      const response = await activityService.createActivity(activityData, token)
+      thunkAPI.dispatch(getLogs())
+      return response
     } catch (error) {
-      const message = error.response?.data?.message || error.message
-      return thunkAPI.rejectWithValue(message)
+      return thunkAPI.rejectWithValue(error.message)
     }
   }
 )
@@ -43,10 +45,11 @@ export const deleteActivity = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
-      return await activityService.deleteActivity(id, token)
+      const response = await activityService.deleteActivity(id, token)
+      thunkAPI.dispatch(getLogs())
+      return response
     } catch (error) {
-      const message = error.response?.data?.message || error.message
-      return thunkAPI.rejectWithValue(message)
+      return thunkAPI.rejectWithValue(error.message)
     }
   }
 )

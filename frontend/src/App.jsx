@@ -15,6 +15,12 @@ import Analysis from './pages/Analysis'
 // Styles
 import './styles/main.css'
 
+// Router future flags
+const routerFutureConfig = {
+  v7_startTransition: true,
+  v7_relativeSplatPath: true
+};
+
 // AppRoutes component for handling routes
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth)
@@ -23,7 +29,7 @@ const AppRoutes = () => {
     <div className="app">
       <Header />
       <div className="container">
-        <Routes>
+        <Routes future={routerFutureConfig}>
           {/* Public Routes */}
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/activities" />} />
           <Route path="/register" element={!user ? <Register /> : <Navigate to="/activities" />} />
@@ -46,7 +52,7 @@ const AppRoutes = () => {
 function App() {
   return (
     <Provider store={store}>
-      <Router basename="/apps/dayact">
+      <Router future={routerFutureConfig}>
         <AppRoutes />
       </Router>
     </Provider>
